@@ -88,6 +88,12 @@ var App = React.createClass({
 			}
 		}
 
+		// push any remaining items
+		if(porfolioItemsForOneRow.length > 0) {
+			portfolioRowsArr.push(<PortfolioRow items={porfolioItemsForOneRow} />);
+			portfolioRowsArr.push(<hr />);
+		}	
+
 		return (
 			<div>
 				{portfolioRowsArr}
@@ -98,11 +104,23 @@ var App = React.createClass({
 
 var PortfolioRow = React.createClass({
 	render: function() {
+		var firstItemExists = true, secondItemExists = true, thirdItemExists = true;
+		// check if the 3 items exist
+		if(typeof this.props.items[0] == 'undefined') {
+			firstItemExists = false;
+			secondItemExists = false;
+			thirdItemExists = false;
+		} else if (typeof this.props.items[1] == 'undefined') {
+			secondItemExists = false;
+			thirdItemExists = false;
+		} else if (typeof this.props.items[2] == 'undefined') {
+			thirdItemExists = false;
+		}
 		return (
 			<div className="row"> 
-				<PortfolioItem title={this.props.items[0].name} desc={this.props.items[0].desc} home={this.props.items[0].home} url={this.props.items[0].repoUrl} />
-				<PortfolioItem title={this.props.items[1].name} desc={this.props.items[1].desc} home={this.props.items[1].home} url={this.props.items[1].repoUrl} />
-				<PortfolioItem title={this.props.items[2].name} desc={this.props.items[2].desc} home={this.props.items[2].home} url={this.props.items[2].repoUrl} />
+				{firstItemExists ? <PortfolioItem title={this.props.items[0].name} desc={this.props.items[0].desc} home={this.props.items[0].home} url={this.props.items[0].repoUrl} /> : null}
+				{secondItemExists ? <PortfolioItem title={this.props.items[1].name} desc={this.props.items[1].desc} home={this.props.items[1].home} url={this.props.items[1].repoUrl} /> : null}
+				{thirdItemExists ? <PortfolioItem title={this.props.items[2].name} desc={this.props.items[2].desc} home={this.props.items[2].home} url={this.props.items[2].repoUrl} /> : null}
         	</div>
 		);
 	}
