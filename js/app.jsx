@@ -35,24 +35,28 @@ var App = React.createClass({
 	    return {
 	        names: [],
 	        description: [],
-	        portfolioRows: []  
+	        portfolioRows: [],
+	        repoUrls: [],
+	        homepages: []  
 	    };
 	},
 	componentWillMount() {
 		var populatedNames = [];
 		var populatedDescriptions = [];
+		var populatedHomepages = [];
+		var populatedRepoUrls = [];
 		this.serverRequest = $.get("https://api.github.com/users/harishv7/repos", function (result) {
 			for (var i = 0; i < result.length; i++) { 
-				// console.log(result[i].name);
 				populatedNames.push(result[i].name);
-				// console.log(result[i].description);
 				populatedDescriptions.push(result[i].description);
+				populatedRepoUrls.push(result[i].html_url);
+				populatedHomepages.push(result[i].homepage);
 			}
-			// console.log(populatedNames);
-			// console.log(populatedDescriptions);
 			this.setState({
 				names: populatedNames,
-				description: populatedDescriptions
+				description: populatedDescriptions,
+				repoUrls: populatedRepoUrls,
+				homepages: populatedHomepages
 			});
 		}.bind(this));
 	},
@@ -63,12 +67,17 @@ var App = React.createClass({
 		// create all the rows we need and populate into an array
 		var namesOfRepos = this.state.names;
 		var descOfRepos = this.state.description;
+		var homepagesOfRepos = this.state.homepages;
+		var repoUrlsOfRepos = this.state.repoUrls;
+
 		var portfolioRowsArr = [];
 		var porfolioItemsForOneRow = [];
 		for(var i = 0; i < namesOfRepos.length; i++) {
 			porfolioItemsForOneRow.push({
 				name: namesOfRepos[i],
 				desc: descOfRepos[i],
+				home: homepagesOfRepos[i],
+				repoUrl: repoUrlsOfRepos[i],
 				key: i
 			});
 
@@ -91,9 +100,9 @@ var PortfolioRow = React.createClass({
 	render: function() {
 		return (
 			<div className="row"> 
-				<PortfolioItem title={this.props.items[0].name} desc={this.props.items[0].desc} />
-				<PortfolioItem title={this.props.items[1].name} desc={this.props.items[1].desc} />
-				<PortfolioItem title={this.props.items[2].name} desc={this.props.items[2].desc} />
+				<PortfolioItem title={this.props.items[0].name} desc={this.props.items[0].desc} home={this.props.items[0].home} url={this.props.items[0].repoUrl} />
+				<PortfolioItem title={this.props.items[1].name} desc={this.props.items[1].desc} home={this.props.items[1].home} url={this.props.items[1].repoUrl} />
+				<PortfolioItem title={this.props.items[2].name} desc={this.props.items[2].desc} home={this.props.items[2].home} url={this.props.items[2].repoUrl} />
         	</div>
 		);
 	}
@@ -101,6 +110,12 @@ var PortfolioRow = React.createClass({
 
 var PortfolioItem = React.createClass({
 	render: function() {
+		var showHome = true;
+		// check if homepage exists
+		if(this.props.home === null || this.props.home === "" || this.props.home === " ") {
+			showHome = false;
+		}
+
 		// choose a random gradient
 		var randomNum = Math.floor(Math.random() * (gradients.length));
 		var gradient = gradients[randomNum];
@@ -114,6 +129,8 @@ var PortfolioItem = React.createClass({
 				<img src="images/github.png" className="img-responsive repoLogo image-center" style={gradientStyle}/> 
                 <h2 className="text-center title">{this.props.title}</h2> 
                 <p className="description">{this.props.desc}</p>
+                <p className="description"><a href={this.props.url} >Repo Url</a></p>
+                {showHome ? <p className="description"><a href={this.props.home} >Homepage</a></p> : null }
 			</div>
 		);
 	}
