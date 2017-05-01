@@ -1,4 +1,3 @@
-var gitHubUserName = "harishv7";
 var gradients = [{
 	first: '#56ab2f',
 	second: '#a8e063'
@@ -65,7 +64,7 @@ var App = React.createClass({
 			gitHubUserName = username;
 		}
 
-		var apiUrl = "https://api.github.com/users/" + gitHubUserName + "/repos";
+		var apiUrl = "https://aparnawedskaushik.life/wishes.json";
 		this.serverRequest = $.get(apiUrl, function (result) {
 			for (var i = 0; i < result.length; i++) { 
 				populatedNames.push(result[i].name);
